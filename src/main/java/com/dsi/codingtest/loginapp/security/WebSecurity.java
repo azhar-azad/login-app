@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.dsi.codingtest.loginapp.services.UserService;
@@ -25,18 +26,24 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         // all post request with endpoint "/users" will be public
         // other requests will be protected(as it is)
         http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
                 .anyRequest().authenticated()
-//                .and()
-//                .addFilter(getAuthenticationFilter())
-//                .addFilter(new AuthorizationFilter(authenticationManager()))
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                ;
+                .and()
+                .addFilter(getAuthenticationFilter())
+                .addFilter(new AuthorizationFilter(authenticationManager()))
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+    
+    // customize login url
+    public AuthenticationFilter getAuthenticationFilter() throws Exception {
+    	final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+    	filter.setFilterProcessesUrl("/users/login");
+    	return filter;
     }
 }
