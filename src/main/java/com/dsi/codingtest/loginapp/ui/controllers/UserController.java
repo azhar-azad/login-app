@@ -2,7 +2,10 @@ package com.dsi.codingtest.loginapp.ui.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,4 +42,19 @@ public class UserController {
         UserRest returnValue = modelMapper.map(createdUser, UserRest.class);
         return returnValue;
     }
+	
+	@GetMapping
+	public String getUser() {
+		return "GET method called";
+	}
+	
+	@PutMapping
+	public String updateUser() {
+		return "PUT method called";
+	}
+	
+	@DeleteMapping
+	public String deleteUser() {
+		return "DELETE method called";
+	}
 }
