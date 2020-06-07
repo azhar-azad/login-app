@@ -8,4 +8,5 @@ import com.dsi.codingtest.loginapp.io.entities.UserEntity;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
 
+	UserEntity findByEmail(String email);
 }
