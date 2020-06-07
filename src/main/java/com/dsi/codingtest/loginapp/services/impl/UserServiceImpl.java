@@ -2,6 +2,7 @@ package com.dsi.codingtest.loginapp.services.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.dsi.codingtest.loginapp.io.entities.UserEntity;
@@ -17,11 +18,17 @@ public class UserServiceImpl implements UserService {
 	
 	private UserRepository userRepository;
 	private Utils utils;
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, Utils utils) {
+	public UserServiceImpl(
+			UserRepository userRepository, 
+			Utils utils,
+			BCryptPasswordEncoder bCryptPasswordEncoder) {
+		
 		this.userRepository = userRepository;
 		this.utils = utils;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
 	@Override
@@ -34,8 +41,7 @@ public class UserServiceImpl implements UserService {
 
 		String publicUserId = utils.generateUserId(30); 
 		userEntity.setUserId(publicUserId);
-		userEntity.setEncryptedPassword("enc-pass");
-//		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
 		UserEntity storedUserDetails = userRepository.save(userEntity); // save the created user
 
